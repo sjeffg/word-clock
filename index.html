@@ -7,54 +7,65 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Word Clock">
 <title>Word Clock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Martian+Mono:wght@400;600&family=Space+Mono:wght@400;700&family=DM+Mono:wght@400;500&family=Fragment+Mono&family=Azeret+Mono:wght@400;600&family=Red+Hat+Mono:wght@400;600&family=Chivo+Mono:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-  /* Faces: graphite (dark), paper (light), darkroom (safelight red, for night) */
   :root {
-    --bg: #dcdfe2;
-    --unlit: #c3c8ce;
-    --lit: #1b2a3a;
-    --glow: rgba(27, 42, 58, 0);
-    --hint: #6b7480;
+    --bg: #000000;
+    --unlit: #2a2a2a;
+    --lit: #ffffff;
+    --glow: rgba(255, 255, 255, 0.3);
+    --hint: #555555;
+    --font: "IBM Plex Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.6vmin;
+    --lit-weight: 600;
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #1c1d1f;
-      --unlit: #2c2e32;
-      --lit: #f2ead8;
-      --glow: rgba(242, 234, 216, 0.35);
-      --hint: #6a6d73;
-    }
+  :root[data-font="plex"] {
+    --font: "IBM Plex Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.6vmin; --lit-weight: 600;
   }
-  :root[data-theme="dark"] {
-    --bg: #1c1d1f;
-    --unlit: #2c2e32;
-    --lit: #f2ead8;
-    --glow: rgba(242, 234, 216, 0.35);
-    --hint: #6a6d73;
+  :root[data-font="space"] {
+    --font: "Space Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.5vmin; --lit-weight: 700;
   }
-  /* An explicit face choice overrides the system appearance */
-  :root[data-face="graphite"] {
-    --bg: #1c1d1f; --unlit: #2c2e32; --lit: #f2ead8;
-    --glow: rgba(242, 234, 216, 0.35); --hint: #6a6d73;
+  :root[data-font="martian"] {
+    --font: "Martian Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 3.9vmin; --lit-weight: 600;
   }
-  :root[data-face="paper"] {
-    --bg: #dcdfe2; --unlit: #c3c8ce; --lit: #1b2a3a;
-    --glow: rgba(27, 42, 58, 0); --hint: #6b7480;
+  :root[data-font="dm"] {
+    --font: "DM Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.6vmin; --lit-weight: 500;
   }
-  :root[data-face="darkroom"] {
-    --bg: #000000; --unlit: #1d0604; --lit: #e8321f;
-    --glow: rgba(232, 50, 31, 0.45); --hint: #4a120c;
+  :root[data-font="fragment"] {
+    --font: "Fragment Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.5vmin; --lit-weight: 400;
+  }
+  :root[data-font="azeret"] {
+    --font: "Azeret Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.2vmin; --lit-weight: 600;
+  }
+  :root[data-font="redhat"] {
+    --font: "Red Hat Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.6vmin; --lit-weight: 600;
+  }
+  :root[data-font="jetbrains"] {
+    --font: "JetBrains Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.6vmin; --lit-weight: 600;
+  }
+  :root[data-font="chivo"] {
+    --font: "Chivo Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.4vmin; --lit-weight: 600;
   }
 
-  html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+  html { height: 100%; }
   body {
     height: 100%;
     margin: 0;
     background: var(--bg);
-    transition: background-color 0.8s ease;
     overflow: hidden;
     -webkit-user-select: none;
     user-select: none;
@@ -83,9 +94,9 @@
     grid-template-rows: repeat(10, 1fr);
     align-items: center;
     justify-items: center;
-    font-family: "Avenir Next", "Avenir", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 500;
-    font-size: 4.6vmin;
+    font-family: var(--font);
+    font-weight: 400;
+    font-size: var(--size);
     line-height: 1;
   }
   .cell {
@@ -94,7 +105,7 @@
   }
   .cell.on {
     color: var(--lit);
-    font-weight: 600;
+    font-weight: var(--lit-weight);
     text-shadow: 0 0 1.4vmin var(--glow);
   }
   .dot {
@@ -118,22 +129,21 @@
     bottom: 0;
     padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 3vmin);
     text-align: center;
-    font-family: "Avenir Next", "Avenir", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: var(--font);
     font-size: 2vmin;
     color: var(--hint);
-    opacity: 1;
     transition: opacity 1.5s ease;
     pointer-events: none;
   }
   .hint.gone { opacity: 0; }
 
   @media (prefers-reduced-motion: reduce) {
-    body, .cell, .dot, .hint { transition: none; }
+    .cell, .dot, .hint { transition: none; }
   }
 </style>
 </head>
 <body>
-<div class="stage" id="stage">
+<div class="stage">
   <div class="board" role="img" id="board" aria-label="">
     <span class="dot d1" aria-hidden="true"></span>
     <span class="dot d2" aria-hidden="true"></span>
@@ -142,7 +152,7 @@
     <div class="grid" id="grid" aria-hidden="true"></div>
   </div>
 </div>
-<div class="hint" id="hint">Tap to change color</div>
+<div class="hint" id="hint">Tap to change font</div>
 
 <script>
 (function () {
@@ -175,7 +185,6 @@
   var HOUR_NAMES = ["", "one", "two", "three", "four", "five", "six",
     "seven", "eight", "nine", "ten", "eleven", "twelve"];
 
-  // Minute phrases for each five-minute block
   var BLOCKS = [
     ["OCLOCK"],
     ["FIVE", "PAST"],
@@ -239,40 +248,34 @@
 
     for (var r = 0; r < cells.length; r++) {
       for (var c = 0; c < cells[r].length; c++) {
-        var lit = !!on[r + "," + c];
-        var el = cells[r][c];
-        if (lit && el.className !== "cell on") el.className = "cell on";
-        else if (!lit && el.className !== "cell") el.className = "cell";
+        var want = on[r + "," + c] ? "cell on" : "cell";
+        if (cells[r][c].className !== want) cells[r][c].className = want;
       }
     }
     for (var d = 0; d < dots.length; d++) {
       dots[d].className = dots[d].className.replace(" on", "") + (d < extra ? " on" : "");
     }
 
-    var phrase = "It is " + words.map(function (w) {
-      return w === "OCLOCK" ? "" : w.toLowerCase();
-    }).join(" ").replace(/\s+/g, " ").trim();
-    phrase += (phrase === "It is" ? " " : " ") + HOUR_NAMES[hour] + (block === 0 ? " o'clock" : "");
+    var minuteWords = words.filter(function (w) { return w !== "OCLOCK"; })
+      .map(function (w) { return w.toLowerCase(); }).join(" ");
+    var phrase = "It is " + (minuteWords ? minuteWords + " " : "") + HOUR_NAMES[hour] +
+      (block === 0 ? " o'clock" : "");
     if (extra) phrase += ", plus " + extra + (extra === 1 ? " minute" : " minutes");
     board.setAttribute("aria-label", phrase);
   }
 
-  // Faces
-  var FACES = ["graphite", "paper", "darkroom"];
+  // Fonts: tap to cycle, choice is remembered
+  var FONTS = ["plex", "space", "martian", "dm", "fragment", "azeret", "redhat", "chivo", "jetbrains"];
   var root = document.documentElement;
-  var face = null;
-  try { face = localStorage.getItem("wordclock-face"); } catch (e) {}
-  if (FACES.indexOf(face) === -1) {
-    face = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)
-      ? "graphite" : "paper";
-  }
-  root.setAttribute("data-face", face);
+  var font = null;
+  try { font = localStorage.getItem("wordclock-font"); } catch (e) {}
+  if (FONTS.indexOf(font) === -1) font = "plex";
+  root.setAttribute("data-font", font);
 
   document.body.addEventListener("click", function () {
-    var i = (FACES.indexOf(face) + 1) % FACES.length;
-    face = FACES[i];
-    root.setAttribute("data-face", face);
-    try { localStorage.setItem("wordclock-face", face); } catch (e) {}
+    font = FONTS[(FONTS.indexOf(font) + 1) % FONTS.length];
+    root.setAttribute("data-font", font);
+    try { localStorage.setItem("wordclock-font", font); } catch (e) {}
   });
 
   setTimeout(function () {
