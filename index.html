@@ -9,7 +9,7 @@
 <title>Word Clock</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Martian+Mono:wght@400;600&family=Space+Mono:wght@400;700&family=DM+Mono:wght@400;500&family=Fragment+Mono&family=Azeret+Mono:wght@400;600&family=Red+Hat+Mono:wght@400;600&family=Chivo+Mono:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Martian+Mono:wght@400;600&family=Space+Mono:wght@400;700&family=DM+Mono:wght@400;500&family=Fragment+Mono&family=Azeret+Mono:wght@400;600&family=Red+Hat+Mono:wght@400;600&family=Chivo+Mono:wght@400;600&family=JetBrains+Mono:wght@400;600&family=Geist+Mono:wght@400;600&family=Source+Code+Pro:wght@400;600&family=Spline+Sans+Mono:wght@400;600&family=Sometype+Mono:wght@400;600&family=Victor+Mono:wght@400;600&family=Kode+Mono:wght@400;600&family=Cutive+Mono&family=Syne+Mono&display=swap">
 <style>
   :root {
     --bg: #000000;
@@ -59,6 +59,38 @@
   :root[data-font="chivo"] {
     --font: "Chivo Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
     --size: 4.4vmin; --lit-weight: 600;
+  }
+  :root[data-font="geist"] {
+    --font: "Geist Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.6vmin; --lit-weight: 600;
+  }
+  :root[data-font="sourcecode"] {
+    --font: "Source Code Pro", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.6vmin; --lit-weight: 600;
+  }
+  :root[data-font="spline"] {
+    --font: "Spline Sans Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.5vmin; --lit-weight: 600;
+  }
+  :root[data-font="sometype"] {
+    --font: "Sometype Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.8vmin; --lit-weight: 600;
+  }
+  :root[data-font="victor"] {
+    --font: "Victor Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.8vmin; --lit-weight: 600;
+  }
+  :root[data-font="kode"] {
+    --font: "Kode Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.4vmin; --lit-weight: 600;
+  }
+  :root[data-font="cutive"] {
+    --font: "Cutive Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.8vmin; --lit-weight: 400;
+  }
+  :root[data-font="syne"] {
+    --font: "Syne Mono", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --size: 4.6vmin; --lit-weight: 400;
   }
 
   html { height: 100%; }
@@ -265,22 +297,37 @@
   }
 
   // Fonts: tap to cycle, choice is remembered
-  var FONTS = ["plex", "space", "martian", "dm", "fragment", "azeret", "redhat", "chivo", "jetbrains"];
+  var FONTS = ["plex", "space", "martian", "dm", "fragment", "azeret", "redhat", "chivo", "jetbrains", "geist", "sourcecode", "spline", "sometype", "victor", "kode", "cutive", "syne"];
   var root = document.documentElement;
   var font = null;
   try { font = localStorage.getItem("wordclock-font"); } catch (e) {}
   if (FONTS.indexOf(font) === -1) font = "plex";
   root.setAttribute("data-font", font);
 
+  var NAMES = {
+    plex: "IBM Plex Mono", space: "Space Mono", martian: "Martian Mono", dm: "DM Mono",
+    fragment: "Fragment Mono", azeret: "Azeret Mono", redhat: "Red Hat Mono",
+    chivo: "Chivo Mono", jetbrains: "JetBrains Mono", geist: "Geist Mono",
+    sourcecode: "Source Code Pro", spline: "Spline Sans Mono", sometype: "Sometype Mono",
+    victor: "Victor Mono", kode: "Kode Mono", cutive: "Cutive Mono", syne: "Syne Mono"
+  };
+  var hint = document.getElementById("hint");
+  var hintTimer = null;
+  function showHint(text, ms) {
+    hint.textContent = text;
+    hint.className = "hint";
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(function () { hint.className = "hint gone"; }, ms);
+  }
+
   document.body.addEventListener("click", function () {
     font = FONTS[(FONTS.indexOf(font) + 1) % FONTS.length];
     root.setAttribute("data-font", font);
     try { localStorage.setItem("wordclock-font", font); } catch (e) {}
+    showHint(NAMES[font], 2000);
   });
 
-  setTimeout(function () {
-    document.getElementById("hint").className = "hint gone";
-  }, 4000);
+  showHint("Tap to change font", 4000);
 
   render();
   setInterval(render, 1000);
