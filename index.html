@@ -59,6 +59,7 @@
     -webkit-user-select: none;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
     cursor: pointer;
   }
   .stage {
@@ -268,16 +269,49 @@
   }
   root.setAttribute("data-face", face);
 
-  document.body.addEventListener("click", function () {
+  function nextFace() {
     var i = (FACES.indexOf(face) + 1) % FACES.length;
     face = FACES[i];
     root.setAttribute("data-face", face);
     try { localStorage.setItem("wordclock-face", face); } catch (e) {}
+  }
+
+  // Full screen (Safari on iPad uses the webkit-prefixed API)
+  var el = document.documentElement;
+  var canFull = !!(el.requestFullscreen || el.webkitRequestFullscreen);
+  function isFull() {
+    return !!(document.fullscreenElement || document.webkitFullscreenElement);
+  }
+  function toggleFull() {
+    try {
+      if (isFull()) {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      } else {
+        var p = el.requestFullscreen ? el.requestFullscreen() : el.webkitRequestFullscreen();
+        if (p && p.catch) p.catch(function () {});
+      }
+    } catch (e) {}
+  }
+
+  // One tap: change color (after a short wait). Two quick taps: full screen.
+  var tapTimer = null;
+  document.body.addEventListener("click", function () {
+    if (tapTimer) {
+      clearTimeout(tapTimer);
+      tapTimer = null;
+      if (canFull) toggleFull(); else nextFace();
+      return;
+    }
+    tapTimer = setTimeout(function () {
+      tapTimer = null;
+      nextFace();
+    }, 320);
   });
 
-  setTimeout(function () {
-    document.getElementById("hint").className = "hint gone";
-  }, 4000);
+  var hint = document.getElementById("hint");
+  if (canFull) hint.textContent = "Tap to change color. Double-tap for full screen.";
+  setTimeout(function () { hint.className = "hint gone"; }, 5000);
 
   render();
   setInterval(render, 1000);
